@@ -32,3 +32,13 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Recursive Android/Gradle cache and build folders
+**/.gradle/
+**/build/
+**/caches/
+**/local.properties
+
+# Windows / system
+Thumbs.db
+.DS_Store

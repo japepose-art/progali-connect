@@ -5,16 +5,22 @@ import android.bluetooth.le.ScanResult
 import com.progali.connect.data.ble.BleScanner
 import com.progali.connect.data.ble.BlufiConnectionState
 import com.progali.connect.data.ble.BlufiManager
+import blufi.espressif.params.BlufiConfigureParams
+import blufi.espressif.response.BlufiStatusResponse
 import kotlinx.coroutines.flow.StateFlow
 
 class DeviceProvisionRepository(
     private val bleScanner: BleScanner,
     private val blufiManager: BlufiManager
 ) {
-    // Exponemos los flujos de datos del Scanner y del Manager
     val foundDevices: StateFlow<List<ScanResult>> = bleScanner.foundDevices
     val isScanning: StateFlow<Boolean> = bleScanner.isScanning
     val connectionState: StateFlow<BlufiConnectionState> = blufiManager.connectionState
+    val deviceStatus: StateFlow<BlufiStatusResponse?> = blufiManager.deviceStatus
+    
+    // Exponemos los datos del servidor desde el manager
+    val serverDomain: StateFlow<String?> = blufiManager.serverDomain
+    val serverPort: StateFlow<String?> = blufiManager.serverPort
 
     fun startScan() {
         bleScanner.startScan()
@@ -25,9 +31,20 @@ class DeviceProvisionRepository(
     }
 
     fun connectToDevice(device: BluetoothDevice) {
-        // Al conectar, detenemos el escaneo para liberar recursos
         bleScanner.stopScan()
         blufiManager.connect(device)
+    }
+
+    fun configureWifi(params: BlufiConfigureParams) {
+        blufiManager.configureWifi(params)
+    }
+
+    fun postCustomData(data: ByteArray) {
+        blufiManager.postCustomData(data)
+    }
+
+    fun requestDeviceStatus() {
+        blufiManager.requestDeviceStatus()
     }
 
     fun disconnect() {

@@ -1,47 +1,53 @@
-package com.progali.connect
+package com.progali.connect.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.progali.connect.ui.device.DeviceScreen
+import com.progali.connect.ui.scan.ScanScreen
 import com.progali.connect.ui.theme.ProgaliConnectTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ProgaliConnectTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                ProgaliAppNavigation()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ProgaliConnectTheme {
-        Greeting("Android")
+fun ProgaliAppNavigation() {
+    val navController = rememberNavController()
+    
+    NavHost(navController = navController, startDestination = "scan") {
+        composable("scan") {
+            ScanScreen(
+                onDeviceConnected = {
+                    navController.navigate("device_config") {
+                        // Evitamos que el usuario pueda volver atrás al escaneo con el botón back físico
+                        // si ya estamos en proceso de configuración
+                        popUpTo("scan") { inclusive = false }
+                    }
+                }
+            )
+        }
+        composable("device_config") {
+            DeviceScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }

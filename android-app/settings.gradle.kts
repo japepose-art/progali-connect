@@ -1,19 +1,11 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google()
         mavenCentral()
         gradlePluginPortal()
     }
 }
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -22,6 +14,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Progali Connect"
+rootProject.name = "progali-connect"
 include(":app")
- 
+include(":lib-blufi")
+
+project(":lib-blufi").projectDir = file("../references/EspBlufiForAndroid/lib-blufi")

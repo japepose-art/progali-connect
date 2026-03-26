@@ -274,7 +274,7 @@ The server domain or IP address used by the device is configured and sent to the
 
 \### Step 4 – Configure Wi-Fi
 
-The technician enters the Wi-Fi SSID and password.  
+The technician enters the Wi-Fi SSID and password.
 
 The credentials are sent to the device using the BLUFI provisioning flow.
 
