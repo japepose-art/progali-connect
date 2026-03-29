@@ -12,13 +12,13 @@ local.properties
 .idea/
 *.DS_Store
 
-# Gradle caches y daemons (generados en el directorio de trabajo)
-caches/
-daemon/
-wrapper/
-kotlin-profile/
-native/
-android/
+# Gradle caches y daemons (generados en el directorio de trabajo raíz)
+/caches/
+/daemon/
+/wrapper/
+/kotlin-profile/
+/native/
+/android/
 
 # Claude Code internal
 .claude/
