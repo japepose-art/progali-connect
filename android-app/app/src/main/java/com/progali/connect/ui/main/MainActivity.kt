@@ -8,9 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.progali.connect.ui.device.DetailsScreen
 import com.progali.connect.ui.device.DeviceScreen
+import com.progali.connect.ui.device.DeviceViewModel
 import com.progali.connect.ui.scan.ScanScreen
 import com.progali.connect.ui.theme.ProgaliConnectTheme
+import com.progali.connect.ui.welcome.WelcomeScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,14 +34,21 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ProgaliAppNavigation() {
     val navController = rememberNavController()
-    
-    NavHost(navController = navController, startDestination = "scan") {
+
+    NavHost(navController = navController, startDestination = "welcome") {
+        composable("welcome") {
+            WelcomeScreen(
+                onNavigateToScan = {
+                    // Navegación simple: welcome permanece en el back stack
+                    // → el botón atrás desde scan vuelve aquí
+                    navController.navigate("scan")
+                }
+            )
+        }
         composable("scan") {
             ScanScreen(
                 onDeviceConnected = {
                     navController.navigate("device_config") {
-                        // Evitamos que el usuario pueda volver atrás al escaneo con el botón back físico
-                        // si ya estamos en proceso de configuración
                         popUpTo("scan") { inclusive = false }
                     }
                 }
@@ -44,9 +56,16 @@ fun ProgaliAppNavigation() {
         }
         composable("device_config") {
             DeviceScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToDetails = { navController.navigate("device_details") }
+            )
+        }
+        composable("device_details") {
+            val parentEntry = remember(it) { navController.getBackStackEntry("device_config") }
+            val viewModel: DeviceViewModel = hiltViewModel(parentEntry)
+            DetailsScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

@@ -17,5 +17,3 @@ dependencyResolutionManagement {
 rootProject.name = "progali-connect"
 include(":app")
 include(":lib-blufi")
-
-project(":lib-blufi").projectDir = file("../references/EspBlufiForAndroid/lib-blufi")
